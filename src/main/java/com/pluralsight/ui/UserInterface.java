@@ -1,10 +1,10 @@
 package com.pluralsight.ui;
 
-import com.pluralsight.ordering.Pizza;
+import com.pluralsight.ordering.Drink;
+import com.pluralsight.ordering.Food;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.Delayed;
 
 public class UserInterface {
     private boolean firstRun = true;
@@ -12,13 +12,15 @@ public class UserInterface {
 
     private final Scanner keyboard = new Scanner(System.in);
     private ArrayList<String> list = new ArrayList<>();
-
     public String selected;
+
+    public Food food = new Food();
+    public Drink drink = new Drink();
 
     public void displayMenu() {
         if (firstRun) {
             clearScreen();
-            System.out.println("Miro: Hello User, and AI Assistant named Miro, Welcome to the Customizable Food Shop");
+            System.out.println("Miro: Hello User, I am an Bot Assistant named Miro, Welcome to the Customizable Food Shop");
             System.out.print("Please Enter a name that I can call you by? \nUser: ");
             name = keyboard.nextLine().trim();
             firstRun = false;
@@ -42,17 +44,20 @@ public class UserInterface {
             default -> System.out.println("Miro: Sorry " + name + " but that doesn't seem to be above...\nPlease try again...\n");
         }
     }
-
+    private boolean orderDisplay = true;
     private void newOrderDisplay() {
-        formattedHeader("New Order");
-        System.out.println("\t1: Add Food");
-        System.out.println("\t2: Add Drink");
-        System.out.println("\t3: Add Chips");
-        System.out.println("\t4: Checkout");
-        System.out.println("\t5: Cancel Order");
-        System.out.println("Miro: Which number above would you like?");
-        promptUserInput();
-        newOrder();
+        orderDisplay = true;
+        while (orderDisplay) {
+            formattedHeader("New Order");
+            System.out.println("\t1: Add Food");
+            System.out.println("\t2: Add Drink");
+            System.out.println("\t3: Add Chips");
+            System.out.println("\t4: Checkout");
+            System.out.println("\t5: Cancel Order");
+            System.out.println("Miro: Which number above would you like?");
+            promptUserInput();
+            newOrder();
+        }
     }
 
     private void newOrder() {
@@ -60,10 +65,11 @@ public class UserInterface {
 
         switch (selected) {
             case "1" -> addFood();
-            //case "2" -> addDrink();
+            case "2" -> drinkDisplay();
             //case "3" -> addChips();
-            //case "4" -> checkout();
-            //case "5" -> cancelOrder();
+            case "4" -> checkout();
+            case "5" -> cancel();
+            case "6" -> orderDisplay = false;
         }
     }
 
@@ -71,13 +77,13 @@ public class UserInterface {
         clearScreen();
         System.out.println("Miro: As of right now the only selection we have is pizza");
         formattedHeader("Adding Food");
-        System.out.println("Miro: " + name + " Please enter in using the format below " +
-                "\n\tEx. PepperoniX20,BaconX20,\nHas to be exampleXamount, X should always be uppercase\n" +
-                "\nMiro: You will be charged for every topping added so please watch your spelling" +
+        System.out.println("Miro: " + name + " please enter in using the format below for your toppings " +
+                "\n\tEx. Topping|Amount" +
+                "\n\tEx. Pepperoni|10" +
                 "\nMiro: Please Enter the toppings you want to add. ");
         promptUserInput();
-        String toppings = keyboard.nextLine();
-        String[] formattedToppings = toppings.split("[, X]");
+        String toppings = keyboard.nextLine().trim();
+        String[] formattedToppings = toppings.split("[|]");
 
         try {
             int quantity = 0;
@@ -93,32 +99,100 @@ public class UserInterface {
                 }
             }
 
-            System.out.println("Miro: Would you like soft crust? y or n ");
+            System.out.println("Miro: Would you like stuffed crust? Y or N?");
             promptUserInput();
             selected = keyboard.nextLine();
 
-            boolean softCrust = false;
+            boolean stuffedCrust = false;
             if (selected.equalsIgnoreCase("Y")) {
                 clearScreen();
-                System.out.println("Miro: Okay, Adding soft crust to pizza order sending info to receipt");
-                softCrust = true;
+                System.out.println("Miro: Okay, Adding stuffed crust to pizza order sending info to receipt");
+                stuffedCrust = true;
             } else {
                 clearScreen();
-                System.out.println("Miro: Okay, Soft crust will not be added to your order");
+                System.out.println("Miro: Okay, stuffed crust will not be added to your order");
             }
             int i = 0;
 
             while (i < formattedToppings.length) {
-                list.add(formattedToppings[i]);
+                list.add(formattedToppings[i].toUpperCase());
                 i++;
             }
 
-            Pizza pizza = new Pizza(list, quantity, softCrust);
+            list.add(String.valueOf(quantity));
+            if (stuffedCrust) {
+                list.add("Stuffed Crust: YES");
+            } else {
+                list.add("Stuffed Crust: NO");
+            }
+            food.addFoodToOrder(list);
             newOrderDisplay();
         } catch (Exception e) {
             clearScreen();
             System.out.println("Miro: Your have to enter a number, sending you back to Home screen");
+            list.clear();
         }
+    }
+
+    private void drinkDisplay() {
+        System.out.println("Miro: Hello " + name + "Welcome to our drink service just type the number of what you want and I'll at it to your order, Drinks are 1$ each");
+        System.out.println("\t1: Pepsi");
+        System.out.println("\t2: Coke");
+        System.out.println("\t3: Iced Tea");
+        System.out.println("\t4: Lemonade");
+        promptUserInput();
+        getdrink();
+    }
+
+    private void getdrink() {
+        selected = keyboard.nextLine();
+
+        switch (selected) {
+            case "1" -> addDrink("Pepsi");
+            case "2" -> addDrink("Coke");
+            case "3" -> addDrink("Iced Tea");
+            case "4" -> addDrink("Lemonade");
+        }
+    }
+
+    private void addDrink(String drink) {
+        list.add("DRINK");
+        list.add(drink);
+        String amount = "";
+        try {
+            int quantity = 0;
+            boolean isNumber = false;
+            while (!isNumber) {
+                System.out.println("Miro: How man drinks would you like?");
+                amount = keyboard.nextLine();
+                if (Integer.parseInt(amount) > 0) {
+                    isNumber = true;
+                    quantity = (Integer.parseInt(amount));
+                } else {
+                    System.out.println("Miro: Number has to be greater than 1...");
+                }
+            }
+            list.add(amount);
+            this.drink.addDrinkToOrder(list);
+            list.clear();
+            newOrderDisplay();
+        } catch (Exception e) {
+            System.out.println("Miro: Invalid Number or You might've typed a number");
+            list.clear();
+        }
+    }
+
+    private void cancel() {
+        clearScreen();
+        System.out.println("Miro: Order Canceled");
+        list.clear();
+    }
+
+    private void checkout() {
+        clearScreen();
+        System.out.println("Miro: Thank you for your order " + name + " Your order will be delivered out shortly, Comeback again!!!");
+        food.confirmOrder(true);
+        list.clear();
     }
 
     private void miroSpecial() {
