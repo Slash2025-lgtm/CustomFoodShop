@@ -3,7 +3,9 @@ package com.pluralsight.ordering;
 import java.util.ArrayList;
 
 public class Food extends Order {
-    public Food() {}
+    public Food() {
+
+    }
 
     @Override
     public void addFoodToOrder(ArrayList<String> orderInfo) {

@@ -156,15 +156,13 @@ public class UserInterface {
     }
 
     private void addDrink(String drink) {
-        list.add("DRINK");
         list.add(drink);
-        String amount = "";
+        int quantity = 0;
         try {
-            int quantity = 0;
             boolean isNumber = false;
             while (!isNumber) {
                 System.out.println("Miro: How man drinks would you like?");
-                amount = keyboard.nextLine();
+                String  amount = keyboard.nextLine();
                 if (Integer.parseInt(amount) > 0) {
                     isNumber = true;
                     quantity = (Integer.parseInt(amount));
@@ -172,12 +170,24 @@ public class UserInterface {
                     System.out.println("Miro: Number has to be greater than 1...");
                 }
             }
-            list.add(amount);
+            list.add(String.valueOf(quantity));
+
+            System.out.println("Miro: Please Enter the size of the drink, Small, Medium, or Large");
+            selected = keyboard.nextLine();
+
+            if (selected.equalsIgnoreCase("Small") || selected.equalsIgnoreCase("Medium") || selected.equalsIgnoreCase("Large")) {
+                list.add(selected);
+            } else {
+                System.out.println("Miro: You seem to not have typed the right size for your drink...");
+                System.out.println("Miro: Clearing...");
+                list.clear();
+            }
             this.drink.addDrinkToOrder(list);
-            list.clear();
             newOrderDisplay();
+            list.clear();
         } catch (Exception e) {
             System.out.println("Miro: Invalid Number or You might've typed a number");
+            System.out.println(e.getMessage());
             list.clear();
         }
     }
