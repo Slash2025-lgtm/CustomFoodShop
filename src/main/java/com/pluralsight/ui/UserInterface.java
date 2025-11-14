@@ -285,22 +285,22 @@ public class UserInterface {
         switch (randomNumb) {
             case 1:
                 list.add("Toppings: Pickles");
-                list.add("Amount" + randomNumb);
+                list.add("Amount: " + randomNumb);
             case 2:
                 list.add("Toppings: Pepperoni");
-                list.add("Amount" + randomNumb);
+                list.add("Amount: " + randomNumb);
             case 3:
                 list.add("Toppings: Cheese");
-                list.add("Amount" + randomNumb);
+                list.add("Amount: " + randomNumb);
             case 4:
                 list.add("Toppings: Bacon");
-                list.add("Amount" + randomNumb);
+                list.add("Amount: " + randomNumb);
             case 5:
                 list.add("Toppings: Jalapeno");
-                list.add("Amount" + randomNumb);
+                list.add("Amount: " + randomNumb);
             case 6:
                 list.add("Toppings: Olive");
-                list.add("Amount" + randomNumb);
+                list.add("Amount: " + randomNumb);
             default:
                 list.add("Toppings: Pepper");
                 list.add("Amount" + randomNumb);
