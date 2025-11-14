@@ -43,7 +43,7 @@ The bot generates you a random pizza, but only if you type that secret code on a
 
 <img width="1193" height="157" alt="image" src="https://github.com/user-attachments/assets/798bfa00-17d6-4043-ad19-275737356aeb" />
 
-Miro Reciept
+Miro Receipt
 
 <img width="747" height="247" alt="image" src="https://github.com/user-attachments/assets/17c8657d-ed81-4497-a00e-ac18dcf53fb6" />
 
