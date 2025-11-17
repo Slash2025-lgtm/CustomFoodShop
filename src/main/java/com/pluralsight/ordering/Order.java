@@ -26,13 +26,8 @@ public class Order implements OrderManager {
     }
 
     @Override
-    public double getPrice() {
-        return this.totalPrice;
-    }
-
-    @Override
-    public void confirmOrder(boolean completeOrder) {
-        int receiptNumber = 0;
+    public void confirmOrder(boolean completeOrder, String name) {
+        int receiptNumber = 1;
         String filePath = "src/main/resources/receipt" + receiptNumber;
         File file = new File(filePath);
 
@@ -51,8 +46,13 @@ public class Order implements OrderManager {
             BufferedWriter bufWriter = new BufferedWriter(new FileWriter(file, true));
             if (completeOrder) {
                 int i = 0;
-                System.out.println(items);
+                bufWriter.write("======================= MIRO'S CUSTOMS RECEIPT =======================");
+                bufWriter.newLine();
+                bufWriter.write("This Receipt was made on " + name + "'s account");
+                bufWriter.write("======================================================================");
                 while (i < items.size()) {
+                    bufWriter.newLine();
+                    bufWriter.write("======================================================================");
                     bufWriter.write(items.get(i));
                     bufWriter.newLine();
                     bufWriter.write("======================================================================");

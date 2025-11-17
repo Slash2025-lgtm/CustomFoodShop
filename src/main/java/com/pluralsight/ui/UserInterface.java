@@ -3,7 +3,6 @@ package com.pluralsight.ui;
 import com.pluralsight.ordering.Order;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -21,18 +20,18 @@ public class UserInterface {
     public void displayMenu() {
         if (firstRun) {
             clearScreen();
-            System.out.println("Miro: Hello User, I am an Bot Assistant named Miro, Welcome to the Customizable Food Shop");
-            System.out.print("Please Enter a name that I can call you by? \nUser: ");
+            System.out.println("Miro: Hello User, I am a Bot here to assist you named Miro, Welcome to Miro's Customs, where we give 1 custom topping of your choice");
+            System.out.print("Miro: What should I call you by? \nUser: ");
             name = keyboard.nextLine().trim();
             firstRun = false;
             clearScreen();
-            System.out.println("Miro: I loaded the home screen for you");
+            System.out.println("Miro: I loaded the home screen for you, there is something here that...");
         }
 
         formattedHeader("Home Screen");
         System.out.println("\t1: New Order");
-        System.out.println("\t2: Miro Special");
-        System.out.println("\t3: Exit");
+        System.out.println("\t2: Exit");
+        System.out.println("\t3: Miro Special");
         System.out.println("Miro: Which number above would you like?");
         promptUserInput();
         selected = keyboard.nextLine().trim();
@@ -41,19 +40,27 @@ public class UserInterface {
         switch (selected) {
             case "1" -> newOrderDisplay();
             case "2" -> exit();
+            case "3" -> miroFooledUser();
             default -> System.out.println("Miro: Sorry " + name + " but that doesn't seem to be above...\nPlease try again...\n");
         }
     }
+
+    private void miroFooledUser() {
+        System.out.println("Miro: Your not getting my free special that easy, I've already given you one hint...");
+    }
+
     private boolean orderDisplay = true;
     private void newOrderDisplay() {
         orderDisplay = true;
         while (orderDisplay) {
-            formattedHeader("New Order");
+            System.out.println("Miro: Here is the order Screen uhh don't type...");
+            formattedHeader("Order");
             System.out.println("\t1: Add Food");
             System.out.println("\t2: Add Drink");
             System.out.println("\t3: Add Chips");
             System.out.println("\t4: Checkout");
             System.out.println("\t5: Cancel Order");
+            System.out.println("\t6: Go Back");
             System.out.println("Miro: Which number above would you like?");
             promptUserInput();
             newOrder();
@@ -76,12 +83,11 @@ public class UserInterface {
 
     private void addFood() {
         clearScreen();
-        formattedHeader("Adding Food");
-
+        formattedHeader("Food");
         System.out.println("Miro: " + name + " please enter in using the format below for your toppings " +
                 "\n\tEx. Topping|Amount" +
                 "\n\tEx. Pepperoni|10" +
-                "\nMiro: Please Enter the toppings you want to add. ");
+                "\nMiro: Please Enter a topping and the amount of that topping you want you want to add. ");
         promptUserInput();
         String toppings = keyboard.nextLine().trim();
         String[] formattedToppings = toppings.split("[|]");
@@ -90,7 +96,8 @@ public class UserInterface {
             int quantity = 0;
             boolean isNumber = false;
             while (!isNumber) {
-                System.out.print("\nMiro: Enter the amount you your would like to order: ");
+                System.out.println("\nMiro: How many you want?");
+                promptUserInput();
                 String amount = keyboard.nextLine();
                 if (Integer.parseInt(amount) > 0) {
                     isNumber = true;
@@ -132,13 +139,12 @@ public class UserInterface {
                 list.add("Stuffed Crust: NO");
             }
 
-            String receiptFormat = list.get(0) + " \n" + list.get(1) + " \n" + list.get(2) + " \n" + list.get(3);
+            String receiptFormat = "\nPIZZA\n" + list.get(0) + " \n" + list.get(1) + " \n" + list.get(2) + " \n" + list.get(3);
             orderList.add(receiptFormat);
             list.clear();
-            newOrderDisplay();
         } catch (Exception e) {
             clearScreen();
-            System.out.println("Miro: Your have to enter a number, sending you back to Home screen");
+            System.out.println("Miro: You have to enter a number invalid character somewhere along the way, sending you back to Home screen");
             list.clear();
         }
     }
@@ -196,7 +202,7 @@ public class UserInterface {
                 } else if (selected.equalsIgnoreCase("Large")) {
                     price += 3.75 * quantity;
                 }
-                String receiptFormat = list.get(0) + " \n" + list.get(1) + " \n" + list.get(2);
+                String receiptFormat = "\n" +  list.get(0) + " \n" + list.get(1) + " \n" + list.get(2);
                 orderList.add(receiptFormat);
                 list.clear();
             } else {
@@ -204,7 +210,7 @@ public class UserInterface {
                 System.out.println("Miro: Clearing...");
                 list.clear();
             }
-            newOrderDisplay();
+            clearScreen();
         } catch (Exception e) {
             System.out.println("Miro: Invalid Number or You might've typed a number");
             System.out.println(e.getMessage());
@@ -250,10 +256,10 @@ public class UserInterface {
                     System.out.println("Miro: Number has to be greater than 1...");
                 }
                 list.add("Amount: " + quantity);
-                String receiptFormat = list.get(0) + " \n" + list.get(1);
+                String receiptFormat = "\n" +  list.get(0) + " \n" + list.get(1);
                 orderList.add(receiptFormat);
             }
-            newOrderDisplay();
+            clearScreen();
         } catch (Exception e) {
             System.out.println("Miro: Invalid Number or You might've typed a number");
             System.out.println(e.getMessage());
@@ -262,19 +268,31 @@ public class UserInterface {
     }
 
     private void cancel() {
-        clearScreen();
-        System.out.println("Miro: Order Canceled");
-        order.confirmOrder(false);
-        orderList.clear();
+        if (orderList.isEmpty()) {
+            System.out.println("Miro: Nothing to cancel, You have to order something first maybe you could order a Miro...");
+        } else {
+            clearScreen();
+            System.out.println("Miro: Order Canceled");
+            order.confirmOrder(false, this.name);
+            orderList.clear();
+            orderDisplay = false;
+        }
+
     }
 
     private void checkout() {
         clearScreen();
-        order.setOrderList(orderList);
-        order.addToPrice(this.price);
-        System.out.println("Miro: Thank you for your order " + name + " Your order will be delivered out shortly, Comeback again!!!");
-        order.confirmOrder(true);
-        list.clear();
+        if (orderList.isEmpty()) {
+            System.out.println("Miro: You have nothing to check out, nice try I guess, Here's another hint type it out...");
+        } else {
+            order.setOrderList(orderList);
+            order.addToPrice(this.price);
+            System.out.println("Miro: Thank you for your order " + name + " Your order will be delivered out shortly, Comeback again!!!");
+            order.confirmOrder(true, this.name);
+            list.clear();
+            orderDisplay = false;
+        }
+
     }
 
     private void miroSpecial() {
@@ -286,29 +304,36 @@ public class UserInterface {
             case 1:
                 list.add("Toppings: Pickles");
                 list.add("Amount: " + randomNumb);
+                break;
             case 2:
                 list.add("Toppings: Pepperoni");
                 list.add("Amount: " + randomNumb);
+                break;
             case 3:
                 list.add("Toppings: Cheese");
                 list.add("Amount: " + randomNumb);
+                break;
             case 4:
                 list.add("Toppings: Bacon");
                 list.add("Amount: " + randomNumb);
+                break;
             case 5:
                 list.add("Toppings: Jalapeno");
                 list.add("Amount: " + randomNumb);
+                break;
             case 6:
                 list.add("Toppings: Olive");
                 list.add("Amount: " + randomNumb);
+                break;
             default:
                 list.add("Toppings: Pepper");
                 list.add("Amount" + randomNumb);
+                break;
         }
         System.out.println("Miro: This ones on the house, the pizza isn't going to have stuffed crust though.");
         list.add("Number of Pizza's: 1");
         list.add("Stuffed Crust: No");
-        String receiptFormat = list.get(0) + " \n" + list.get(1) + " \n" + list.get(2) + " \n" + list.get(3);
+        String receiptFormat = "\n" + list.get(0) + " \n" + list.get(1) + " \n" + list.get(2) + " \n" + list.get(3);
         orderList.add(receiptFormat);
         list.clear();
         System.out.println("Miro: Press enter whenever you are done... Also I wont tell you your order you have to wait for the receipt");
